@@ -1,0 +1,64 @@
+//
+//  MainContent.swift
+//  YAK Port Forwarder
+//
+//  Created by JJ Hayter on 29/06/2025.
+//
+
+import Foundation
+import SwiftUI
+
+struct MainContent: View {
+    var viewModel: any KubeDataProvider
+    
+    var body: some View {
+        VStack {
+            Grid {
+                ForEach(test(t: viewModel.portForwards.count), id: \.self) { portForwardIdx in
+                    GridRow {
+                        PortForwardItem(portForward: viewModel.portForwards[portForwardIdx[0]])
+                        
+                        if (portForwardIdx.count > 1) {
+                            PortForwardItem(portForward: viewModel.portForwards[portForwardIdx[1]])
+                        }
+                    }
+                    Divider()
+                }
+            }
+            
+            VStack {
+                Text("Current Cluster:")
+                    .font(.callout)
+                Text(viewModel.cluster)
+                    .font(.subheadline)
+            }.padding()
+        }
+        .toolbar {
+            ToolbarItemGroup {
+                Button {
+                    print("export button")
+                } label: {
+                    Label("Export", systemImage: "square.and.arrow.up")
+                        .labelStyle(.iconOnly)
+                }
+                Button {
+                    print("test button")
+                } label: {
+                    Label("Save", systemImage: "square.and.arrow.down")
+                        .labelStyle(.iconOnly)
+                }
+            }
+        }
+    }
+    
+    func test(t: Int) -> [[Int]] {
+        let range = 0..<t
+        return stride(from: 0, to: t, by: 2).map {
+            Array(range[$0 ..< Swift.min($0 + 2, t)])
+        }
+    }
+}
+
+#Preview() {
+    MainContent(viewModel: PreviewKubeDataProvider())
+}
