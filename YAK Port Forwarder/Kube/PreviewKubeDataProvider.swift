@@ -9,7 +9,7 @@ import Foundation
 
 class PreviewKubeDataProvider : KubeDataProvider {
     @Published var portForwards: [KubePortForwardResource] = [
-        KubePortForwardResource(resourceName: "test", resourceType: .service, namespace: "test-1", forwardedPorts: [
+        KubePortForwardResource(resourceName: "nginx-bf5d5cf98-hqz66", resourceType: .pod, namespace: "default", forwardedPorts: [
             PortMapping(localPort: 7701, remotePort: 80)]),
         KubePortForwardResource(resourceName: "another", resourceType: .service, namespace: "test-1", forwardedPorts: [
             PortMapping(localPort: 7702, remotePort: 80)]),

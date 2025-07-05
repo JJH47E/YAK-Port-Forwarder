@@ -19,4 +19,12 @@ enum KubeResourceType : CustomStringConvertible {
         case .service: return "Service"
         }
     }
+    
+    var resourceName : String {
+        switch self {
+        case .deployment: return "deployment"
+        case .pod: return ""
+        case .service: return "service"
+        }
+    }
 }

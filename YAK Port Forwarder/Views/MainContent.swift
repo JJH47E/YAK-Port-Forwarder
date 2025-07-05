@@ -14,7 +14,7 @@ struct MainContent: View {
     var body: some View {
         VStack {
             Grid {
-                ForEach(test(t: viewModel.portForwards.count), id: \.self) { portForwardIdx in
+                ForEach(batchForGrid(n: viewModel.portForwards.count), id: \.self) { portForwardIdx in
                     GridRow {
                         PortForwardItem(portForward: viewModel.portForwards[portForwardIdx[0]])
                         
@@ -51,10 +51,10 @@ struct MainContent: View {
         }
     }
     
-    func test(t: Int) -> [[Int]] {
-        let range = 0..<t
-        return stride(from: 0, to: t, by: 2).map {
-            Array(range[$0 ..< Swift.min($0 + 2, t)])
+    func batchForGrid(n: Int) -> [[Int]] {
+        let range = 0..<n
+        return stride(from: 0, to: n, by: 2).map {
+            Array(range[$0 ..< Swift.min($0 + 2, n)])
         }
     }
 }
