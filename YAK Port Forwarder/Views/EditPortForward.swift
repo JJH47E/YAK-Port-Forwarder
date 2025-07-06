@@ -2,10 +2,9 @@
 //  EditPortForward.swift
 //  YAK Port Forwarder
 //
-//  Created by JJ Hayter on 29/06/2025.
+//  Created by JJ Hayter on 06/07/2025.
 //
 
-import Foundation
 import SwiftUI
 
 struct EditPortForward: View {
@@ -14,13 +13,13 @@ struct EditPortForward: View {
     var body: some View {
         NavigationStack {
             NavigationView {
-                
-            }.navigationTitle("New Port Forward")
+                PortForwardForm(portForwardResource: $portForwardResource)
+            }.navigationTitle(portForwardResource.resourceName)
         }
     }
 }
 
-#Preview() {
+#Preview {
     @Previewable @State var resource = KubePortForwardResource(resourceName: "nginx-1234", resourceType: .pod, namespace: "default", forwardedPorts: [])
     EditPortForward(portForwardResource: $resource)
 }

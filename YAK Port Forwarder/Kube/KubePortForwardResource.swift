@@ -25,6 +25,10 @@ class KubePortForwardResource : ObservableObject {
         self.status = .idle
     }
     
+    static func new() -> KubePortForwardResource {
+        return KubePortForwardResource(resourceName: "", resourceType: .pod, namespace: "", forwardedPorts: [])
+    }
+    
     func startStop() {
         if (self.status == .running) {
             stop()

@@ -7,10 +7,16 @@
 
 import Foundation
 
-enum KubeResourceType : CustomStringConvertible {
+enum KubeResourceType : CustomStringConvertible, Identifiable {
+    var id: Self {
+        return self
+    }
+    
     case deployment
     case pod
     case service
+    
+    static let all : [KubeResourceType] = [.deployment, .pod, .service]
     
     var description : String {
         switch self {

@@ -45,7 +45,7 @@ struct MainContent: View {
             }
         }
         .sheet(isPresented: $showAddPortForwardSheet) {
-            EditPortForward(portForwardResource: <#T##Binding<KubePortForwardResource>#>)
+            AddPortForward()
         }
     }
     
