@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MainContent: View {
     var viewModel: any KubeDataProvider
+    @State private var showAddPortForwardSheet: Bool = false
     
     var body: some View {
         VStack {
@@ -36,18 +37,15 @@ struct MainContent: View {
         .toolbar {
             ToolbarItemGroup {
                 Button {
-                    print("export button")
+                    showAddPortForwardSheet.toggle()
                 } label: {
-                    Label("Export", systemImage: "square.and.arrow.up")
-                        .labelStyle(.iconOnly)
-                }
-                Button {
-                    print("test button")
-                } label: {
-                    Label("Save", systemImage: "square.and.arrow.down")
+                    Label("Add", systemImage: "plus")
                         .labelStyle(.iconOnly)
                 }
             }
+        }
+        .sheet(isPresented: $showAddPortForwardSheet) {
+            EditPortForward(portForwardResource: <#T##Binding<KubePortForwardResource>#>)
         }
     }
     

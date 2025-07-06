@@ -59,6 +59,8 @@ class KubePortForwardResource : ObservableObject {
                 DispatchQueue.main.async {
                     if process.terminationReason == .exit && process.terminationStatus == 0 {
                         self.status = .stopped
+                    } else if process.terminationStatus == 15 { // SIGTERM is typically a status code of 15
+                        self.status = .stopped
                     } else {
                         print("Process Terminated with error: \(process.terminationStatus)")
                         self.status = .error
