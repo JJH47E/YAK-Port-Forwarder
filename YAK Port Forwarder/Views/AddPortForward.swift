@@ -8,17 +8,35 @@
 import SwiftUI
 
 struct AddPortForward: View {
-    @State private var portForwardResource = KubePortForwardResource.new()
+    @Environment(\.dismiss) private var dismiss
+    @State var portForwardResource = KubePortForwardResource.new()
+    var viewModel: KubeViewModel
     
     var body: some View {
         NavigationStack {
             NavigationView {
-                PortForwardForm(portForwardResource: $portForwardResource)
+                VStack {
+                    PortForwardForm(portForwardResource: $portForwardResource)
+                }
             }.navigationTitle(portForwardResource.resourceName.isEmpty ? "Add Port Forward" : portForwardResource.resourceName)
+                .padding()
+                    .toolbar {
+                        ToolbarItem( placement: .confirmationAction ) {
+                            Button( "Create" ) {
+                                viewModel.addPortForward(portForwardResource)
+                                dismiss()
+                            }
+                        }
+                        ToolbarItem( placement: .cancellationAction ) {
+                            Button( "Cancel" ) {
+                                dismiss()
+                            }
+                        }
+                    }.navigationSplitViewStyle(.prominentDetail)
         }
     }
 }
 
 #Preview {
-    AddPortForward()
+    AddPortForward(viewModel: PreviewKubeDataProvider())
 }

@@ -7,14 +7,30 @@
 
 import SwiftUI
 
+// TODO: Dismiss should discard your changes
+
 struct EditPortForward: View {
+    @Environment(\.dismiss) private var dismiss
     @Binding var portForwardResource: KubePortForwardResource
     
     var body: some View {
         NavigationStack {
             NavigationView {
                 PortForwardForm(portForwardResource: $portForwardResource)
-            }.navigationTitle(portForwardResource.resourceName)
+            }.navigationTitle(portForwardResource.resourceName.isEmpty ? "Edit Port Forward" : portForwardResource.resourceName)
+                .padding()
+                    .toolbar {
+                        ToolbarItem( placement: .confirmationAction ) {
+                            Button( "Create" ) {
+                                dismiss()
+                            }
+                        }
+                        ToolbarItem( placement: .cancellationAction ) {
+                            Button( "Cancel" ) {
+                                dismiss()
+                            }
+                        }
+                    }.navigationSplitViewStyle(.prominentDetail)
         }
     }
 }

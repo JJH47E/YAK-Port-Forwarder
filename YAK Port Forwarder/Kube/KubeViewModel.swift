@@ -7,7 +7,11 @@
 
 import Foundation
 
-class KubeViewModel : KubeDataProvider {
+class KubeViewModel: ObservableObject {
     @Published var portForwards: [KubePortForwardResource] = []
     @Published var cluster: String = "test"
+    
+    func addPortForward(_ portForward: KubePortForwardResource) {
+        portForwards.append(portForward)
+    }
 }

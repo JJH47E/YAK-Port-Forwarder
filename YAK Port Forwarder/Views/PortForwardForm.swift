@@ -11,15 +11,23 @@ import SwiftUI
 struct PortForwardForm: View {
     @Binding var portForwardResource: KubePortForwardResource
     
+    @State private var type: KubeResourceType = .pod
+    
     var body: some View {
         Form {
             TextField("Resource Name", text: $portForwardResource.resourceName)
             
-            Picker("Resource Type", selection: $portForwardResource.resourceType) {
+            Picker("Resource Type", selection: $type) {
                 ForEach(KubeResourceType.all) { option in
-                    Text(option.description)
+                    Text(option.description).tag(option)
                 }
             }
+            
+            TextField("Namespace", text: $portForwardResource.namespace)
+        }.onAppear {
+            self.type = self.portForwardResource.resourceType
+        }.onChange(of: type) { oldType, newType in
+            self.portForwardResource.resourceType = newType
         }
     }
 }

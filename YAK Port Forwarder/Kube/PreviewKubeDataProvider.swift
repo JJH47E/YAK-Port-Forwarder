@@ -7,15 +7,22 @@
 
 import Foundation
 
-class PreviewKubeDataProvider : KubeDataProvider {
-    @Published var portForwards: [KubePortForwardResource] = [
-        KubePortForwardResource(resourceName: "nginx-bf5d5cf98-hqz66", resourceType: .pod, namespace: "default", forwardedPorts: [
-            PortMapping(localPort: 7701, remotePort: 80)]),
-        KubePortForwardResource(resourceName: "another", resourceType: .service, namespace: "test-1", forwardedPorts: [
-            PortMapping(localPort: 7702, remotePort: 80)]),
-        KubePortForwardResource(resourceName: "third", resourceType: .service, namespace: "test-1", forwardedPorts: [
-            PortMapping(localPort: 7703, remotePort: 80)])
-    ]
+class PreviewKubeDataProvider : KubeViewModel {
+    override init() {
+        super.init()
+        self.portForwards = [
+            KubePortForwardResource(resourceName: "nginx-bf5d5cf98-hqz66", resourceType: .pod, namespace: "default", forwardedPorts: [
+                PortMapping(localPort: 7701, remotePort: 80)]),
+            KubePortForwardResource(resourceName: "another", resourceType: .service, namespace: "test-1", forwardedPorts: [
+                PortMapping(localPort: 7702, remotePort: 80)]),
+            KubePortForwardResource(resourceName: "third", resourceType: .service, namespace: "test-1", forwardedPorts: [
+                PortMapping(localPort: 7703, remotePort: 80)])
+        ]
+        
+        self.cluster = "Staging"
+    }
     
-    @Published var cluster: String = "Staging"
+    override func addPortForward(_ portForward: KubePortForwardResource) -> Void {
+        portForwards.append(portForward)
+    }
 }
