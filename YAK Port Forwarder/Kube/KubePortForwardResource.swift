@@ -29,6 +29,11 @@ class KubePortForwardResource : ObservableObject {
         return KubePortForwardResource(resourceName: "", resourceType: .pod, namespace: "", forwardedPorts: [])
     }
     
+    func addNewPortMapping() -> Void {
+        self.forwardedPorts.append(PortMapping.new())
+        objectWillChange.send()
+    }
+    
     func startStop() {
         if (self.status == .running) {
             stop()
@@ -47,7 +52,7 @@ class KubePortForwardResource : ObservableObject {
             guard let self = self else { return }
             
             // Prep command to execute
-            let portsToForward = self.forwardedPorts.map { "\($0.localPort):\($0.remotePort)" }
+            let portsToForward = self.forwardedPorts.map { "\($0.localPort!):\($0.remotePort!)" }
             let resourceIdentifier = "\(self.resourceType.resourceName.isEmpty ? self.resourceType.resourceName : "\(self.resourceType.resourceName)/")\(self.resourceName)"
             
             var arguments = ["port-forward", resourceIdentifier, "-n", self.namespace]

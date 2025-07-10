@@ -9,9 +9,10 @@ import Foundation
 import SwiftUI
 
 struct PortForwardForm: View {
-    @Binding var portForwardResource: KubePortForwardResource
+    @ObservedObject var portForwardResource: KubePortForwardResource
     
     @State private var type: KubeResourceType = .pod
+    @State private var test = "local"
     
     var body: some View {
         Form {
@@ -24,15 +25,37 @@ struct PortForwardForm: View {
             }
             
             TextField("Namespace", text: $portForwardResource.namespace)
+            
+            Section("Ports") {
+                ScrollView {
+                    portMappingForm
+                }.frame(width: 300.0, height: 80.0)
+                Button {
+                    portForwardResource.addNewPortMapping()
+                } label: {
+                    Label("Add New", systemImage: "plus")
+                }
+            }
         }.onAppear {
             self.type = self.portForwardResource.resourceType
         }.onChange(of: type) { oldType, newType in
             self.portForwardResource.resourceType = newType
         }
     }
+    
+    @ViewBuilder var portMappingForm: some View {
+        VStack {
+            ForEach(portForwardResource.forwardedPorts) { mapping in
+                HStack {
+                    TextField(value: $test, formatter: NumberFormatter(), prompt: Text("Local")) {}
+                    TextField(value: $test, formatter: NumberFormatter(), prompt: Text("Remote")) {}
+                }
+            }
+        }
+    }
 }
 
 #Preview() {
     @Previewable @State var resource = KubePortForwardResource(resourceName: "nginx-1234", resourceType: .pod, namespace: "default", forwardedPorts: [])
-    PortForwardForm(portForwardResource: $resource)
+    PortForwardForm(portForwardResource: resource)
 }

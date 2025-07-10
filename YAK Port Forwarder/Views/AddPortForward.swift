@@ -16,7 +16,7 @@ struct AddPortForward: View {
         NavigationStack {
             NavigationView {
                 VStack {
-                    PortForwardForm(portForwardResource: $portForwardResource)
+                    PortForwardForm(portForwardResource: portForwardResource)
                 }
             }.navigationTitle(portForwardResource.resourceName.isEmpty ? "Add Port Forward" : portForwardResource.resourceName)
                 .padding()

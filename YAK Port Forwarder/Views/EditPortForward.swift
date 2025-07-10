@@ -16,7 +16,7 @@ struct EditPortForward: View {
     var body: some View {
         NavigationStack {
             NavigationView {
-                PortForwardForm(portForwardResource: $portForwardResource)
+                PortForwardForm(portForwardResource: portForwardResource)
             }.navigationTitle(portForwardResource.resourceName.isEmpty ? "Edit Port Forward" : portForwardResource.resourceName)
                 .padding()
                     .toolbar {
