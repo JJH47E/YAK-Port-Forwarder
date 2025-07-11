@@ -14,7 +14,12 @@ struct MainContent: View {
     
     var body: some View {
         VStack {
-            PortForwardList(portForwards: $viewModel.portForwards)
+            
+            ScrollView {
+                PortForwardList(portForwards: $viewModel.portForwards)
+            }
+            
+            Spacer()
             
             VStack {
                 Text("Current Context:")

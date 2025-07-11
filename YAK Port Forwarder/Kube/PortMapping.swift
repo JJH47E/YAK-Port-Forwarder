@@ -7,16 +7,20 @@
 
 import Foundation
 
-class PortMapping : ObservableObject, Identifiable, Codable {
+class PortMapping : ObservableObject, Identifiable, Codable, Cloneable {
     @Published var localPort: Int?
     @Published var remotePort: Int?
     
-    init(localPort: Int, remotePort: Int) {
+    init(localPort: Int?, remotePort: Int?) {
         self.localPort = localPort
         self.remotePort = remotePort
     }
     
     init() {}
+    
+    func clone() -> PortMapping {
+        return PortMapping(localPort: self.localPort, remotePort: self.remotePort)
+    }
     
     static func new() -> PortMapping {
         return PortMapping()

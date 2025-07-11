@@ -13,24 +13,36 @@ struct EditPortForward: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var portForwardResource: KubePortForwardResource
     
+    @State private var editableResource: KubePortForwardResource?
+    
     var body: some View {
         NavigationStack {
             NavigationView {
-                PortForwardForm(portForwardResource: portForwardResource)
-            }.navigationTitle(portForwardResource.resourceName.isEmpty ? "Edit Port Forward" : portForwardResource.resourceName)
-                .padding()
-                    .toolbar {
-                        ToolbarItem( placement: .confirmationAction ) {
-                            Button( "Confirm" ) {
-                                dismiss()
-                            }
-                        }
-                        ToolbarItem( placement: .cancellationAction ) {
-                            Button( "Cancel" ) {
-                                dismiss()
-                            }
-                        }
-                    }.navigationSplitViewStyle(.prominentDetail)
+                Group {
+                    if editableResource == nil {
+                        ProgressView()
+                    } else {
+                        PortForwardForm(portForwardResource: editableResource!)
+                            .navigationTitle("Edit Port Forward")
+                            .padding()
+                    }
+                }.navigationSplitViewStyle(.prominentDetail)
+            }.toolbar {
+                ToolbarItem( placement: .confirmationAction ) {
+                    Button( "Confirm" ) {
+                        portForwardResource.applyChanges(from: editableResource!)
+                        dismiss()
+                    }
+                }
+                ToolbarItem( placement: .cancellationAction ) {
+                    Button( "Cancel" ) {
+                        dismiss()
+                    }
+                }
+            }
+                .onAppear {
+                    editableResource = portForwardResource.clone()
+                }
         }
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class KubePortForwardResource : ObservableObject, Codable {
+class KubePortForwardResource : ObservableObject, Codable, Cloneable {
     @Published var resourceName: String
     @Published var resourceType: KubeResourceType
     @Published var namespace: String
@@ -17,6 +17,18 @@ class KubePortForwardResource : ObservableObject, Codable {
     
     enum CodingKeys: CodingKey {
         case resourceName, resourceType, namespace, forwardedPorts
+    }
+    
+    func clone() -> KubePortForwardResource {
+        return KubePortForwardResource(resourceName: self.resourceName, resourceType: self.resourceType, namespace: self.namespace, forwardedPorts: self.forwardedPorts.map { $0.clone() })
+    }
+    
+    func applyChanges(from resource: KubePortForwardResource) -> Void {
+        self.resourceName = resource.resourceName
+        self.resourceType = resource.resourceType
+        self.namespace = resource.namespace
+        self.forwardedPorts = resource.forwardedPorts
+        self.status = .idle
     }
     
     private var portForwardProcess: Process?
