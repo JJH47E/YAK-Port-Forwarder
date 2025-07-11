@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum KubeResourceType : CustomStringConvertible, Identifiable {
+enum KubeResourceType : CustomStringConvertible, Identifiable, Codable {
     var id: Self {
         return self
     }

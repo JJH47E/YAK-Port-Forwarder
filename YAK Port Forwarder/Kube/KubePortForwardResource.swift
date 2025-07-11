@@ -8,12 +8,16 @@
 import Foundation
 import Combine
 
-class KubePortForwardResource : ObservableObject {
+class KubePortForwardResource : ObservableObject, Codable {
     @Published var resourceName: String
     @Published var resourceType: KubeResourceType
     @Published var namespace: String
     @Published var forwardedPorts: [PortMapping]
     @Published var status: PortForwardStatus
+    
+    enum CodingKeys: CodingKey {
+        case resourceName, resourceType, namespace, forwardedPorts
+    }
     
     private var portForwardProcess: Process?
     
@@ -110,6 +114,25 @@ class KubePortForwardResource : ObservableObject {
         process.terminate()
         
         self.status = .stopped
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(self.resourceName, forKey: .resourceName)
+        try container.encode(self.resourceType, forKey: .resourceType)
+        try container.encode(self.namespace, forKey: .namespace)
+        try container.encode(self.forwardedPorts, forKey: .forwardedPorts)
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.resourceName = try container.decode(String.self, forKey: .resourceName)
+        self.resourceType = try container.decode(KubeResourceType.self, forKey: .resourceType)
+        self.namespace = try container.decode(String.self, forKey: .namespace)
+        self.forwardedPorts = try container.decode([PortMapping].self, forKey: .forwardedPorts)
+        self.status = .idle
     }
 }
 

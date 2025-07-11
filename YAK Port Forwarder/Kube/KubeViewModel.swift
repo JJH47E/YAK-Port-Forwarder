@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class KubeViewModel: ObservableObject {
     @Published var portForwards: [KubePortForwardResource] = []
@@ -48,6 +49,48 @@ class KubeViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.context = "Unknown context"
                 }
+            }
+        }
+    }
+    
+    func saveAs() {
+        let panel = NSSavePanel()
+        panel.title = "Save Configuration"
+        panel.canCreateDirectories = true
+        panel.showsTagField = false
+
+        if panel.runModal() == .OK, let selectedURL = panel.url {
+            let jsonEncoder = JSONEncoder()
+            do {
+                let jsonData = try jsonEncoder.encode(portForwards)
+                try jsonData.write(to: selectedURL)
+            } catch {
+                print("[Save] Save failed, error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func openFile() {
+        let panel = NSOpenPanel()
+        panel.title = "Open Configuration"
+        panel.canCreateDirectories = true
+        panel.showsTagField = false
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+
+        if panel.runModal() == .OK, let selectedURL = panel.url {
+            let jsonDecoder = JSONDecoder()
+            
+            do {
+                let jsonData = try Data(contentsOf: selectedURL)
+                let config = try jsonDecoder.decode([KubePortForwardResource].self, from: jsonData)
+                
+                self.portForwards = config
+                load()
+                self.loaded = true
+            } catch {
+                print("[Open] Failed to open configuration file: \(error.localizedDescription)")
             }
         }
     }

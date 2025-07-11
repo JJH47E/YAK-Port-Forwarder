@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Splash: View {
-    @StateObject var viewModel = KubeViewModel()
+    @ObservedObject var viewModel: KubeViewModel
     
     var body: some View {
         Group {
@@ -30,7 +30,7 @@ struct Splash: View {
                             .padding(CGFloat(8))
                     }.buttonStyle(.borderedProminent)
                     Button {
-                        print("Loading")
+                        viewModel.openFile()
                     } label: {
                         Label("Open Configuration File", systemImage: "document")
                             .labelStyle(.titleAndIcon)

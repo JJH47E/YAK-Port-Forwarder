@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var viewModel: KubeViewModel
+    
     var body: some View {
-        Splash()
+        Splash(viewModel: viewModel)
     }
 }
 
 #Preview {
-    ContentView()
+    @Previewable @StateObject var viewModel = PreviewKubeDataProvider()
+    ContentView(viewModel: viewModel)
 }
