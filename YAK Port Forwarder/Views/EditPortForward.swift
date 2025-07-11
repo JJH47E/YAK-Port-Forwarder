@@ -21,7 +21,7 @@ struct EditPortForward: View {
                 .padding()
                     .toolbar {
                         ToolbarItem( placement: .confirmationAction ) {
-                            Button( "Create" ) {
+                            Button( "Confirm" ) {
                                 dismiss()
                             }
                         }

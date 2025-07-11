@@ -12,7 +12,6 @@ struct PortForwardForm: View {
     @ObservedObject var portForwardResource: KubePortForwardResource
     
     @State private var type: KubeResourceType = .pod
-    @State private var test = "local"
     
     var body: some View {
         Form {
@@ -46,10 +45,10 @@ struct PortForwardForm: View {
     
     @ViewBuilder var portMappingForm: some View {
         VStack {
-            ForEach(portForwardResource.forwardedPorts) { mapping in
+            ForEach($portForwardResource.forwardedPorts) { mapping in
                 HStack {
-                    TextField(value: $test, formatter: NumberFormatter(), prompt: Text("Local")) {}
-                    TextField(value: $test, formatter: NumberFormatter(), prompt: Text("Remote")) {}
+                    TextField(value: mapping.localPort, formatter: NumberFormatter(), prompt: Text("Local")) {}
+                    TextField(value: mapping.remotePort, formatter: NumberFormatter(), prompt: Text("Remote")) {}
                 }
             }
         }
