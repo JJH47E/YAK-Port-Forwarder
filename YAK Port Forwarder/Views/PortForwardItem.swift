@@ -49,7 +49,7 @@ struct PortForwardItem: View {
         }
         
         let firstPortForward = portForward.forwardedPorts.first!
-        var result = "\(firstPortForward.localPort!):\(firstPortForward.remotePort!)"
+        var result = "\(firstPortForward.localPort ?? 0):\(firstPortForward.remotePort ?? 0)"
         
         if (portForward.forwardedPorts.count > 1) {
             result += ", ..."

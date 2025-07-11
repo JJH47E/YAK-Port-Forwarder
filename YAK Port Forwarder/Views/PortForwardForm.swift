@@ -36,7 +36,8 @@ struct PortForwardForm: View {
                     Label("Add New", systemImage: "plus")
                 }
             }
-        }.onAppear {
+        }.scrollContentBackground(.hidden)
+        .onAppear {
             self.type = self.portForwardResource.resourceType
         }.onChange(of: type) { oldType, newType in
             self.portForwardResource.resourceType = newType

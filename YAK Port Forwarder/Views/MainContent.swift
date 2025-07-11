@@ -17,10 +17,14 @@ struct MainContent: View {
             PortForwardList(portForwards: $viewModel.portForwards)
             
             VStack {
-                Text("Current Cluster:")
+                Text("Current Context:")
                     .font(.callout)
-                Text(viewModel.cluster)
-                    .font(.subheadline)
+                if (viewModel.context != nil) {
+                    Text(viewModel.context!)
+                        .font(.subheadline)
+                } else {
+                    ProgressView()
+                }
             }.padding()
         }
         .toolbar {

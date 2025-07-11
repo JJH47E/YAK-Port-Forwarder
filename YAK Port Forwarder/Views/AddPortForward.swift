@@ -13,27 +13,23 @@ struct AddPortForward: View {
     var viewModel: KubeViewModel
     
     var body: some View {
-        NavigationStack {
-            NavigationView {
-                VStack {
-                    PortForwardForm(portForwardResource: portForwardResource)
+        VStack {
+            PortForwardForm(portForwardResource: portForwardResource)
+        }.navigationTitle(portForwardResource.resourceName.isEmpty ? "Add Port Forward" : portForwardResource.resourceName)
+            .padding()
+                .toolbar {
+                    ToolbarItem( placement: .confirmationAction ) {
+                        Button( "Create" ) {
+                            viewModel.addPortForward(portForwardResource)
+                            dismiss()
+                        }
+                    }
+                    ToolbarItem( placement: .cancellationAction ) {
+                        Button( "Cancel" ) {
+                            dismiss()
+                        }
+                    }
                 }
-            }.navigationTitle(portForwardResource.resourceName.isEmpty ? "Add Port Forward" : portForwardResource.resourceName)
-                .padding()
-                    .toolbar {
-                        ToolbarItem( placement: .confirmationAction ) {
-                            Button( "Create" ) {
-                                viewModel.addPortForward(portForwardResource)
-                                dismiss()
-                            }
-                        }
-                        ToolbarItem( placement: .cancellationAction ) {
-                            Button( "Cancel" ) {
-                                dismiss()
-                            }
-                        }
-                    }.navigationSplitViewStyle(.prominentDetail)
-        }
     }
 }
 

@@ -19,10 +19,15 @@ class PreviewKubeDataProvider : KubeViewModel {
                 PortMapping(localPort: 7703, remotePort: 80)])
         ]
         
-        self.cluster = "Staging"
+        self.context = "Unknown"
+        self.loaded = true
     }
     
     override func addPortForward(_ portForward: KubePortForwardResource) -> Void {
         portForwards.append(portForward)
+    }
+    
+    override func load() {
+        self.context = "test"
     }
 }
