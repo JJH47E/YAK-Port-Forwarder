@@ -8,12 +8,19 @@
 import Foundation
 import Combine
 
+@Observable
 class KubePortForwardResource : ObservableObject, Codable, Cloneable {
-    @Published var resourceName: String
-    @Published var resourceType: KubeResourceType
-    @Published var namespace: String
-    @Published var forwardedPorts: [PortMapping]
-    @Published var status: PortForwardStatus
+    var resourceName: String
+    var resourceType: KubeResourceType
+    var namespace: String
+    var forwardedPorts: [PortMapping]
+    var status: PortForwardStatus
+    
+    var isValid: Bool {
+        return !self.resourceName.isEmpty && !self.namespace.isEmpty && !self.forwardedPorts.isEmpty && self.forwardedPorts.allSatisfy { mapping in
+            mapping.localPort != nil && mapping.remotePort != nil
+        }
+    }
     
     enum CodingKeys: CodingKey {
         case resourceName, resourceType, namespace, forwardedPorts

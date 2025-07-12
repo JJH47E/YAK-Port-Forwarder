@@ -19,13 +19,13 @@ struct AddPortForward: View {
             .padding()
                 .toolbar {
                     ToolbarItem( placement: .confirmationAction ) {
-                        Button( "Create" ) {
+                        Button("Create") {
                             viewModel.addPortForward(portForwardResource)
                             dismiss()
-                        }
+                        }.disabled(!portForwardResource.isValid)
                     }
                     ToolbarItem( placement: .cancellationAction ) {
-                        Button( "Cancel" ) {
+                        Button("Cancel") {
                             dismiss()
                         }
                     }

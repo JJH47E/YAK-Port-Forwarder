@@ -33,7 +33,7 @@ struct EditPortForward: View {
                 Button("Confirm") {
                     portForwardResource.applyChanges(from: editableResource!)
                     dismiss()
-                }
+                }.disabled(!(editableResource?.isValid ?? true))
             }
             ToolbarItem(placement: .cancellationAction) {
                 Button("Cancel") {
