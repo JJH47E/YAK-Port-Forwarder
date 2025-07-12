@@ -11,43 +11,49 @@ import SwiftUI
 
 struct EditPortForward: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var portForwardResource: KubePortForwardResource
+    @ObservedObject var portForwardResource: KubePortForwardResource
     
     @State private var editableResource: KubePortForwardResource?
     
+    var deleteAction: (() -> Void)
+    
     var body: some View {
-        NavigationStack {
-            NavigationView {
-                Group {
-                    if editableResource == nil {
-                        ProgressView()
-                    } else {
-                        PortForwardForm(portForwardResource: editableResource!)
-                            .navigationTitle("Edit Port Forward")
-                            .padding()
-                    }
-                }.navigationSplitViewStyle(.prominentDetail)
-            }.toolbar {
-                ToolbarItem( placement: .confirmationAction ) {
-                    Button( "Confirm" ) {
-                        portForwardResource.applyChanges(from: editableResource!)
-                        dismiss()
-                    }
+        VStack {
+            Group {
+                if editableResource == nil {
+                    ProgressView()
+                } else {
+                    PortForwardForm(portForwardResource: editableResource!)
+                        .navigationTitle("Edit Port Forward")
+                        .padding()
                 }
-                ToolbarItem( placement: .cancellationAction ) {
-                    Button( "Cancel" ) {
-                        dismiss()
-                    }
+            }.navigationSplitViewStyle(.prominentDetail)
+        }.toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Confirm") {
+                    portForwardResource.applyChanges(from: editableResource!)
+                    dismiss()
                 }
             }
-                .onAppear {
-                    editableResource = portForwardResource.clone()
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                    dismiss()
                 }
+            }
+            ToolbarItem(placement: .destructiveAction) {
+                Button("Delete", role: .destructive) {
+                    deleteAction()
+                    dismiss()
+                }.buttonStyle(.automatic)
+            }
+        }
+        .onAppear {
+            editableResource = portForwardResource.clone()
         }
     }
 }
 
 #Preview {
-    @Previewable @State var resource = KubePortForwardResource(resourceName: "nginx-1234", resourceType: .pod, namespace: "default", forwardedPorts: [])
-    EditPortForward(portForwardResource: $resource)
+    @Previewable @StateObject var resource = KubePortForwardResource(resourceName: "nginx-1234", resourceType: .pod, namespace: "default", forwardedPorts: [])
+    EditPortForward(portForwardResource: resource) {}
 }

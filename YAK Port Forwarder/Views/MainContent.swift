@@ -48,6 +48,16 @@ struct MainContent: View {
                 Button("Add", systemImage: "plus") {
                     showAddPortForwardSheet.toggle()
                 }
+                
+                if viewModel.runningAll {
+                    Button("Stop", systemImage: "stop.fill") {
+                        viewModel.startStopAll()
+                    }
+                } else {
+                    Button("Start", systemImage: "play.fill") {
+                        viewModel.startStopAll()
+                    }
+                }
             }
         }
         .sheet(isPresented: $showAddPortForwardSheet) {

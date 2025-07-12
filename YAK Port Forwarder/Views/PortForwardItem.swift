@@ -9,9 +9,11 @@ import Foundation
 import SwiftUI
 
 struct PortForwardItem: View {
-    @Binding var portForward: KubePortForwardResource
+    @ObservedObject var portForward: KubePortForwardResource
     
     @State private var showEditSheet = false
+    
+    var deleteAction: (() -> Void)
     
     var body: some View {
         HStack {
@@ -39,7 +41,9 @@ struct PortForwardItem: View {
                 }.buttonStyle(.borderedProminent)
             }.padding()
         }.sheet(isPresented: $showEditSheet) {
-            EditPortForward(portForwardResource: $portForward)
+            EditPortForward(portForwardResource: portForward) {
+                deleteAction()
+            }
         }
     }
     
@@ -73,6 +77,6 @@ struct PortForwardItem: View {
 }
 
 #Preview() {
-    @Previewable @State var portForward = KubePortForwardResource(resourceName: "test-service", resourceType: .service, namespace: "test-1", forwardedPorts: [PortMapping(localPort: 7701, remotePort: 80)])
-    PortForwardItem(portForward: $portForward)
+    @Previewable @StateObject var portForward = KubePortForwardResource(resourceName: "test-service", resourceType: .service, namespace: "test-1", forwardedPorts: [PortMapping(localPort: 7701, remotePort: 80)])
+    PortForwardItem(portForward: portForward) { }
 }

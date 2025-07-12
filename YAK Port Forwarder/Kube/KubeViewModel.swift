@@ -8,10 +8,32 @@
 import Foundation
 import SwiftUI
 
+@Observable
 class KubeViewModel: ObservableObject {
-    @Published var portForwards: [KubePortForwardResource] = []
-    @Published var context: String? = nil
-    @Published var loaded: Bool = false
+    var portForwards: [KubePortForwardResource] = []
+    var context: String? = nil
+    var loaded: Bool = false
+    var runningAll: Bool = false
+    
+    func startStopAll() {
+        if self.runningAll {
+            for portForward in self.portForwards {
+                if portForward.status == .running {
+                    portForward.stop()
+                }
+            }
+            
+            self.runningAll = false
+        } else {
+            for portForward in self.portForwards {
+                if portForward.status != .running {
+                    portForward.start()
+                }
+            }
+            
+            self.runningAll = true
+        }
+    }
     
     func addPortForward(_ portForward: KubePortForwardResource) {
         portForwards.append(portForward)
@@ -36,6 +58,7 @@ class KubeViewModel: ObservableObject {
             task.standardError = pipe
 
             do {
+                print("running get context")
                 try task.run()
                 task.waitUntilExit()
 
