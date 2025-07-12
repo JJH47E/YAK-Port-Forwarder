@@ -10,22 +10,9 @@
 		346846A82E116161000A921B /* YAK Port Forwarder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "YAK Port Forwarder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		342494522E22E03B0049BF75 /* Exceptions for "YAK Port Forwarder" folder in "YAK Port Forwarder" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"YAK-Port-Forwarder-Info.plist",
-			);
-			target = 346846A72E116161000A921B /* YAK Port Forwarder */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		346846AA2E116161000A921B /* YAK Port Forwarder */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				342494522E22E03B0049BF75 /* Exceptions for "YAK Port Forwarder" folder in "YAK Port Forwarder" target */,
-			);
 			path = "YAK Port Forwarder";
 			sourceTree = "<group>";
 		};
@@ -271,7 +258,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "YAK-Port-Forwarder-Info.plist";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "JJ Hayter";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -300,7 +287,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "YAK-Port-Forwarder-Info.plist";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "JJ Hayter";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
