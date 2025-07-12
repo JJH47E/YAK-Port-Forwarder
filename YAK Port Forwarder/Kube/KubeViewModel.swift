@@ -14,6 +14,13 @@ class KubeViewModel: ObservableObject {
     var context: String? = nil
     var loaded: Bool = false
     var runningAll: Bool = false
+    var errorText: String? = nil
+    var hasError: Bool = false
+    
+    func resetError() -> Void {
+        self.errorText = nil
+        self.hasError = false
+    }
     
     func startStopAll() {
         if self.runningAll {
@@ -108,6 +115,15 @@ class KubeViewModel: ObservableObject {
             do {
                 let jsonData = try Data(contentsOf: selectedURL)
                 let config = try jsonDecoder.decode([KubePortForwardResource].self, from: jsonData)
+                
+                for forward in config {
+                    if (!forward.isValid) {
+                        print("[Open] Open file failed. File may be corrupt")
+                        self.errorText = "Opening file failed. The file may be corrupt."
+                        self.hasError = true
+                        return
+                    }
+                }
                 
                 self.portForwards = config
                 load()

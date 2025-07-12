@@ -16,6 +16,7 @@ struct MainContent: View {
         VStack {
             
             if viewModel.portForwards.isEmpty {
+                Spacer()
                 VStack {
                     Image(systemName: "plus.square.dashed")
                         .resizable()
@@ -52,11 +53,11 @@ struct MainContent: View {
                 if viewModel.runningAll {
                     Button("Stop", systemImage: "stop.fill") {
                         viewModel.startStopAll()
-                    }
+                    }.disabled(viewModel.portForwards.isEmpty)
                 } else {
                     Button("Start", systemImage: "play.fill") {
                         viewModel.startStopAll()
-                    }
+                    }.disabled(viewModel.portForwards.isEmpty)
                 }
             }
         }

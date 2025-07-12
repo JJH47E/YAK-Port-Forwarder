@@ -15,6 +15,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
     var namespace: String
     var forwardedPorts: [PortMapping]
     var status: PortForwardStatus
+    var errorDescription: String? = nil
     
     var isValid: Bool {
         return !self.resourceName.isEmpty && !self.namespace.isEmpty && !self.forwardedPorts.isEmpty && self.forwardedPorts.allSatisfy { mapping in
@@ -95,6 +96,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
                         self.status = .stopped
                     } else {
                         print("Process Terminated with error: \(process.terminationStatus)")
+                        self.errorDescription = "Error: \(String(describing: process.standardError))"
                         self.status = .error
                     }
                     self.portForwardProcess = nil
@@ -115,6 +117,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
                 DispatchQueue.main.async {
                     print("Error running process: \(error.localizedDescription)")
                     self.status = .error
+                    self.errorDescription = "Error: \(error.localizedDescription)"
                     self.portForwardProcess = nil
                 }
             }

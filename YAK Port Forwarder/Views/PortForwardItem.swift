@@ -18,9 +18,18 @@ struct PortForwardItem: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(portForward.resourceName)
-                    .bold()
-                    .font(.title2)
+                HStack {
+                    Text(portForward.resourceName)
+                        .bold()
+                        .font(.title2)
+                    
+                    if portForward.status == .error {
+                        Text(portForward.errorDescription ?? "Error")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                            .padding(.leading)
+                    }
+                }
                 Text(portForward.resourceType.description)
                     .font(.subheadline)
             }.padding()
@@ -32,7 +41,7 @@ struct PortForwardItem: View {
                 } label: {
                     Label("Edit", systemImage: "gear")
                         .labelStyle(.iconOnly)
-                }.buttonStyle(.borderless)
+                }.buttonStyle(.borderless).disabled(portForward.status == .running)
                 Button {
                     portForward.startStop()
                 } label: {
