@@ -15,8 +15,19 @@ struct MainContent: View {
     var body: some View {
         VStack {
             
-            ScrollView {
-                PortForwardList(portForwards: $viewModel.portForwards)
+            if viewModel.portForwards.isEmpty {
+                VStack {
+                    Image(systemName: "plus.square.dashed")
+                        .resizable()
+                        .frame(width: 100, height: 100)
+                    Text("You haven't created any port forwards")
+                        .fontDesign(.rounded)
+                        .padding()
+                }
+            } else {
+                ScrollView {
+                    PortForwardList(portForwards: $viewModel.portForwards)
+                }
             }
             
             Spacer()
