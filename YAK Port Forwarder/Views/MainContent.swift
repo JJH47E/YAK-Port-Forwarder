@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct MainContent: View {
+    @Environment(\.openURL) var openURL
     @ObservedObject var viewModel: KubeViewModel
     @State private var showAddPortForwardSheet: Bool = false
     @State private var showUpdateNamespaceSheet: Bool = false
@@ -48,7 +49,7 @@ struct MainContent: View {
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button {
-                    print("noop")
+                    openURL(URL(string: "https://github.com/JJH47E/YAK-Port-Forwarder")!)
                 } label: {
                     Label("GitHub", image: "GitHubSymbol")
                         .labelStyle(.iconOnly)
