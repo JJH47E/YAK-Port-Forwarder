@@ -16,6 +16,7 @@ class KubeViewModel: ObservableObject {
     var runningAll: Bool = false
     var errorText: String? = nil
     var hasError: Bool = false
+    var filePath: URL? = nil
     
     func resetError() -> Void {
         self.errorText = nil
@@ -83,17 +84,34 @@ class KubeViewModel: ObservableObject {
         }
     }
     
+    func save() {
+        if filePath == nil {
+            // Save As
+            self.saveAs()
+        } else {
+            // Save file
+            let jsonEncoder = JSONEncoder()
+            do {
+                let jsonData = try jsonEncoder.encode(portForwards)
+                try jsonData.write(to: filePath!)
+            } catch {
+                print("[Save] Save failed, error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     func saveAs() {
         let panel = NSSavePanel()
         panel.title = "Save Configuration"
         panel.canCreateDirectories = true
         panel.showsTagField = false
-
+        
         if panel.runModal() == .OK, let selectedURL = panel.url {
             let jsonEncoder = JSONEncoder()
             do {
                 let jsonData = try jsonEncoder.encode(portForwards)
                 try jsonData.write(to: selectedURL)
+                self.filePath = selectedURL
             } catch {
                 print("[Save] Save failed, error: \(error.localizedDescription)")
             }

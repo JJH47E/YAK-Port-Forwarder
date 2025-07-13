@@ -17,10 +17,16 @@ struct YAK_Port_ForwarderApp: App {
         }.commands {
             CommandGroup(after: CommandGroupPlacement.newItem) {
                 Button("Save") {
-                    viewModel.saveAs()
+                    viewModel.save()
                 }
                 .disabled(!viewModel.loaded)
                 .keyboardShortcut("S", modifiers: [.command])
+                
+                Button("Save As") {
+                    viewModel.saveAs()
+                }
+                .disabled(!viewModel.loaded)
+                .keyboardShortcut("S", modifiers: [.command, .shift])
                 
                 Button("Open") {
                     viewModel.openFile()
