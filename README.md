@@ -1,12 +1,10 @@
 
 # YAK Port Forwarder
 
-YAK (Yet Another Kubernetes) Port Forwarder is a GUI tool for managing & running port forwarding processes to a kubernetes cluster.
+YAK (Yet Another Kubernetes) Port Forwarder is a macOS GUI tool for managing & running port forwarding processes to a kubernetes cluster.
 
 
-
-
-![Logo](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/th5xamgrr6se0x5ro4g6.png)
+![Logo](https://github.com/JJH47E/YAK-Port-Forwarder/blob/main/Resources/header.png)
 
 
 ## Screenshot
