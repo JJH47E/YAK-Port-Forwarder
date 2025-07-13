@@ -30,6 +30,7 @@ struct PortForwardItem: View {
                             .padding(.leading)
                     }
                 }
+                Text("Namespace: \(portForward.namespace)")
                 Text(portForward.resourceType.description)
                     .font(.subheadline)
             }.padding()
