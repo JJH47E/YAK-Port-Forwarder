@@ -30,6 +30,14 @@ Open the project in Xcode
 
 Press Run
 
+## Roadmap
+
+There're a few features I'd like to add, but not sure I'll get round to it. Feel free to contribute if you like the tool.
+
+1. File associations for the `.yak` file type
+2. Support custom `kubectl` executable paths
+3. ...
+
 
 ## License
 
