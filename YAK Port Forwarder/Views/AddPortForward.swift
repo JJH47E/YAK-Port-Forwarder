@@ -15,21 +15,21 @@ struct AddPortForward: View {
     var body: some View {
         VStack {
             PortForwardForm(portForwardResource: portForwardResource)
-        }.navigationTitle(portForwardResource.resourceName.isEmpty ? "Add Port Forward" : portForwardResource.resourceName)
-            .padding()
-                .toolbar {
-                    ToolbarItem( placement: .confirmationAction ) {
-                        Button("Create") {
-                            viewModel.addPortForward(portForwardResource)
-                            dismiss()
-                        }.disabled(!portForwardResource.isValid)
-                    }
-                    ToolbarItem( placement: .cancellationAction ) {
-                        Button("Cancel") {
-                            dismiss()
-                        }
-                    }
+        }
+        .padding()
+        .toolbar {
+            ToolbarItem( placement: .confirmationAction ) {
+                Button("Create") {
+                    viewModel.addPortForward(portForwardResource)
+                    dismiss()
+                }.disabled(!portForwardResource.isValid)
+            }
+            ToolbarItem( placement: .cancellationAction ) {
+                Button("Cancel") {
+                    dismiss()
                 }
+            }
+        }
     }
 }
 

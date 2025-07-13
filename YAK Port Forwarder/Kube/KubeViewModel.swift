@@ -23,6 +23,12 @@ class KubeViewModel: ObservableObject {
         self.hasError = false
     }
     
+    func updateNamespace(_ namesapce: String) -> Void {
+        for portForward in portForwards {
+            portForward.namespace = namesapce
+        }
+    }
+    
     func startStopAll() {
         if self.runningAll {
             for portForward in self.portForwards {
@@ -66,7 +72,6 @@ class KubeViewModel: ObservableObject {
             task.standardError = pipe
 
             do {
-                print("running get context")
                 try task.run()
                 task.waitUntilExit()
 

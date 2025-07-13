@@ -11,6 +11,7 @@ import SwiftUI
 struct MainContent: View {
     @ObservedObject var viewModel: KubeViewModel
     @State private var showAddPortForwardSheet: Bool = false
+    @State private var showUpdateNamespaceSheet: Bool = false
     
     var body: some View {
         VStack {
@@ -45,10 +46,37 @@ struct MainContent: View {
             }.padding()
         }
         .toolbar {
-            ToolbarItemGroup {
-                Button("Add", systemImage: "plus") {
-                    showAddPortForwardSheet.toggle()
+            ToolbarItem(placement: .navigation) {
+                Button {
+                    print("noop")
+                } label: {
+                    Label("GitHub", image: "GitHubSymbol")
+                        .labelStyle(.iconOnly)
                 }
+            }
+            
+            ToolbarItemGroup {
+                Menu {
+                    Button {
+                        showUpdateNamespaceSheet.toggle()
+                    } label: {
+                        Label("Change Namespace", systemImage: "arrow.trianglehead.2.clockwise")
+                            .labelStyle(.titleAndIcon)
+                    }
+                } label: {
+                    Label("Actions", systemImage: "wand.and.sparkles")
+                        .labelStyle(.titleAndIcon)
+                        .padding()
+                }
+
+                
+                Button {
+                    viewModel.save()
+                } label: {
+                    Label("Save", image: "FloppyDisk")
+                        .labelStyle(.titleAndIcon)
+                        .padding()
+                }.disabled(!viewModel.loaded)
                 
                 if viewModel.runningAll {
                     Button("Stop", systemImage: "stop.fill") {
@@ -59,10 +87,17 @@ struct MainContent: View {
                         viewModel.startStopAll()
                     }.disabled(viewModel.portForwards.isEmpty)
                 }
+                
+                Button("Add", systemImage: "plus") {
+                    showAddPortForwardSheet.toggle()
+                }
             }
         }
         .sheet(isPresented: $showAddPortForwardSheet) {
             AddPortForward(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showUpdateNamespaceSheet) {
+            UpdateNamespace(viewModel: viewModel)
         }
     }
 }
