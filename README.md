@@ -9,7 +9,7 @@ YAK (Yet Another Kubernetes) Port Forwarder is a macOS GUI tool for managing & r
 
 ## Screenshot
 
-IMAGE HERE
+![Screenshot](https://github.com/JJH47E/YAK-Port-Forwarder/blob/main/Resources/yak-preview.png?raw=true)
 
 
 ## Installation
