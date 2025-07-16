@@ -25,7 +25,7 @@ struct Settings: View {
                     let url = URL(string: newKubectlBinUrl)!
                     viewModel.updateBinUrl(url)
                     dismiss()
-                }.disabled(UrlHelper.isValidUrl(newKubectlBinUrl))
+                }.disabled(!UrlHelper.isValidUrl(newKubectlBinUrl))
             }
             ToolbarItem( placement: .cancellationAction ) {
                 Button("Cancel") {
