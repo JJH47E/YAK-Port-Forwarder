@@ -9,7 +9,12 @@ import SwiftUI
 
 @main
 struct YAK_Port_ForwarderApp: App {
-    @StateObject private var viewModel = KubeViewModel()
+    private var appStorage = AppStorageWrapper()
+    @StateObject var viewModel = KubeViewModel()
+    
+    init() {
+        self.viewModel.setAppStorage(appStorage: appStorage)
+    }
     
     var body: some Scene {
         WindowGroup {

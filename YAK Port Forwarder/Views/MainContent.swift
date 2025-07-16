@@ -13,6 +13,7 @@ struct MainContent: View {
     @ObservedObject var viewModel: KubeViewModel
     @State private var showAddPortForwardSheet: Bool = false
     @State private var showUpdateNamespaceSheet: Bool = false
+    @State private var showSettingsSheet: Bool = false
     
     var body: some View {
         VStack {
@@ -84,6 +85,10 @@ struct MainContent: View {
                         .padding()
                 }.disabled(!viewModel.loaded)
                 
+                Button("Settings", systemImage: "gearshape") {
+                    showSettingsSheet.toggle()
+                }
+                
                 if viewModel.runningAll {
                     Button("Stop", systemImage: "stop.fill") {
                         viewModel.startStopAll()
@@ -104,6 +109,9 @@ struct MainContent: View {
         }
         .sheet(isPresented: $showUpdateNamespaceSheet) {
             UpdateNamespace(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showSettingsSheet) {
+            Settings(viewModel: viewModel)
         }
     }
 }

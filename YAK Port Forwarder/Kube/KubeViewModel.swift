@@ -17,6 +17,22 @@ class KubeViewModel: ObservableObject {
     var errorText: String? = nil
     var hasError: Bool = false
     var filePath: URL? = nil
+    private var kubectlBinUrl: URL? = nil
+    private var appStorage: AppStorageWrapper?
+    
+    func updateBinUrl(_ url: URL) {
+        self.kubectlBinUrl = url
+        self.appStorage?.kubectlBinUrl = url
+    }
+    
+    func getBinUrl() -> URL? {
+        return self.kubectlBinUrl
+    }
+    
+    func setAppStorage(appStorage: AppStorageWrapper) {
+        self.kubectlBinUrl = appStorage.kubectlBinUrl
+        self.appStorage = appStorage
+    }
     
     func resetError() -> Void {
         self.errorText = nil
@@ -64,7 +80,7 @@ class KubeViewModel: ObservableObject {
             
             let task = Process()
             // TODO: Set up for other routes
-            task.executableURL = URL(fileURLWithPath: "/usr/local/bin/kubectl")
+            task.executableURL = URL(fileURLWithPath: self.kubectlBinUrl?.absoluteString ?? "/usr/local/bin/kubectl")
             task.arguments = ["config", "current-context"]
             
             let pipe = Pipe()
