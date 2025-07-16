@@ -20,8 +20,13 @@ struct MainContent: View {
             if viewModel.portForwards.isEmpty {
                 Spacer()
                 VStack {
-                    Image(systemName: "plus.square.dashed")
-                        .resizable()
+                    Button {
+                        showAddPortForwardSheet.toggle()
+                    } label: {
+                        Image(systemName: "plus.square.dashed")
+                            .resizable()
+                    }
+                    .buttonStyle(.borderless)
                         .frame(width: 100, height: 100)
                     Text("You haven't created any port forwards")
                         .fontDesign(.rounded)

@@ -82,11 +82,14 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
             var arguments = ["port-forward", resourceIdentifier, "-n", self.namespace]
             arguments.append(contentsOf: portsToForward)
             
+            let outputPipe = Pipe()
+            
             // Spin up the process
             let task = Process()
             // TODO: Set up for other routes
             task.executableURL = URL(fileURLWithPath: "/usr/local/bin/kubectl")
             task.arguments = arguments
+            task.standardOutput = outputPipe
             
             task.terminationHandler = { process in
                 DispatchQueue.main.async {
@@ -96,7 +99,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
                         self.status = .stopped
                     } else {
                         print("Process Terminated with error: \(process.terminationStatus)")
-                        self.errorDescription = "Error: \(String(describing: process.standardError))"
+                        self.errorDescription = "Termination Error: \(String(describing: process.standardError))"
                         self.status = .error
                     }
                     self.portForwardProcess = nil
@@ -117,9 +120,17 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
                 DispatchQueue.main.async {
                     print("Error running process: \(error.localizedDescription)")
                     self.status = .error
-                    self.errorDescription = "Error: \(error.localizedDescription)"
+                    self.errorDescription = "Runtime Error: \(error.localizedDescription)"
                     self.portForwardProcess = nil
                 }
+            }
+            
+            do {
+                let processLogFile = TemporaryFile(filename: "\(self.resourceName)-\(UUID().uuidString).log")
+                let stdOut = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                try processLogFile.write(stdOut)
+            } catch {
+                print("Error occured when trying to log output of process: \(self.resourceName)")
             }
         }
     }
