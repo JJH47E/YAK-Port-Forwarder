@@ -83,7 +83,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
             arguments.append(contentsOf: portsToForward)
             
             // Spin up the process
-            let task = Process()
+            let task = ShellHelper.createProcess()
             // TODO: Set up for other routes
             task.executableURL = URL(fileURLWithPath: "/usr/local/bin/kubectl")
             task.arguments = arguments
