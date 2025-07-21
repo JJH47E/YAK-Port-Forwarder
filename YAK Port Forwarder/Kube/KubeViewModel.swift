@@ -62,7 +62,7 @@ class KubeViewModel: ObservableObject {
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self = self else { return }
             
-            let task = Process()
+            let task = ShellHelper.createProcess()
             // TODO: Set up for other routes
             task.executableURL = URL(fileURLWithPath: "/usr/local/bin/kubectl")
             task.arguments = ["config", "current-context"]
