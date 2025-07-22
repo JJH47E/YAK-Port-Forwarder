@@ -50,7 +50,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
     }
     
     static func new() -> KubePortForwardResource {
-        return KubePortForwardResource(resourceName: "", resourceType: .pod, namespace: "", forwardedPorts: [])
+        return KubePortForwardResource(resourceName: "", resourceType: .pod, namespace: "", forwardedPorts: [PortMapping.new()])
     }
     
     func addNewPortMapping() -> Void {
