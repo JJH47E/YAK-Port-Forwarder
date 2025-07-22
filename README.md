@@ -34,9 +34,9 @@ Press Run
 
 There're a few features I'd like to add, but not sure I'll get round to it. Feel free to contribute if you like the tool.
 
-1. File associations for the `.yak` file type
-2. Support custom `kubectl` executable paths
-3. ...
+1. Support custom `kubectl` executable paths
+2. Better error messages
+3. Resource/Namespace autocomplete (though I'm not a big fan of this feature)
 
 
 ## License

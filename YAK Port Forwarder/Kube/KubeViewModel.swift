@@ -110,6 +110,7 @@ class KubeViewModel: ObservableObject {
         panel.title = "Save Configuration"
         panel.canCreateDirectories = true
         panel.showsTagField = false
+        panel.nameFieldStringValue = "kube-port-forward.yak"
         
         if panel.runModal() == .OK, let selectedURL = panel.url {
             let jsonEncoder = JSONEncoder()
@@ -133,28 +134,32 @@ class KubeViewModel: ObservableObject {
         panel.allowsMultipleSelection = false
 
         if panel.runModal() == .OK, let selectedURL = panel.url {
-            let jsonDecoder = JSONDecoder()
+            openFile(selectedURL: selectedURL)
+        }
+    }
+    
+    func openFile(selectedURL: URL) {
+        let jsonDecoder = JSONDecoder()
+        
+        do {
+            let jsonData = try Data(contentsOf: selectedURL)
+            let config = try jsonDecoder.decode([KubePortForwardResource].self, from: jsonData)
             
-            do {
-                let jsonData = try Data(contentsOf: selectedURL)
-                let config = try jsonDecoder.decode([KubePortForwardResource].self, from: jsonData)
-                
-                for forward in config {
-                    if (!forward.isValid) {
-                        print("[Open] Open file failed. File may be corrupt")
-                        self.errorText = "Opening file failed. The file may be corrupt."
-                        self.hasError = true
-                        return
-                    }
+            for forward in config {
+                if (!forward.isValid) {
+                    print("[Open] Open file failed. File may be corrupt")
+                    self.errorText = "Opening file failed. The file may be corrupt."
+                    self.hasError = true
+                    return
                 }
-                
-                self.filePath = selectedURL
-                self.portForwards = config
-                load()
-                self.loaded = true
-            } catch {
-                print("[Open] Failed to open configuration file: \(error.localizedDescription)")
             }
+            
+            self.filePath = selectedURL
+            self.portForwards = config
+            load()
+            self.loaded = true
+        } catch {
+            print("[Open] Failed to open configuration file: \(error.localizedDescription)")
         }
     }
 }
