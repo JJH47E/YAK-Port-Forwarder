@@ -5,6 +5,8 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>FileIcon</string>
 			<key>CFBundleTypeIconSystemGenerated</key>
 			<integer>1</integer>
 			<key>CFBundleTypeName</key>
@@ -29,8 +31,14 @@
 			</array>
 			<key>UTTypeDescription</key>
 			<string>YAK File</string>
+			<key>UTTypeIconFile</key>
+			<string></string>
 			<key>UTTypeIcons</key>
 			<dict>
+				<key>UTTypeIconBackgroundName</key>
+				<string></string>
+				<key>UTTypeIconBadgeName</key>
+				<string>FileIcon</string>
 				<key>UTTypeIconText</key>
 				<string>YAK</string>
 			</dict>
