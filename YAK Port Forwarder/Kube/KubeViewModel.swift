@@ -90,7 +90,7 @@ class KubeViewModel: ObservableObject {
     }
     
     func save() {
-        if filePath == nil {
+        if self.filePath == nil {
             // Save As
             self.saveAs()
         } else {
@@ -98,7 +98,7 @@ class KubeViewModel: ObservableObject {
             let jsonEncoder = JSONEncoder()
             do {
                 let jsonData = try jsonEncoder.encode(portForwards)
-                try jsonData.write(to: filePath!)
+                try jsonData.write(to: self.filePath!)
             } catch {
                 print("[Save] Save failed, error: \(error.localizedDescription)")
             }
@@ -148,6 +148,7 @@ class KubeViewModel: ObservableObject {
                     }
                 }
                 
+                self.filePath = selectedURL
                 self.portForwards = config
                 load()
                 self.loaded = true

@@ -47,6 +47,20 @@ struct PortForwardForm: View {
         VStack {
             ForEach($portForwardResource.forwardedPorts) { mapping in
                 HStack {
+                    Button {
+                        let idx = portForwardResource.forwardedPorts.firstIndex {
+                            $0.id == mapping.id
+                        }
+                        
+                        if (idx == nil) {
+                            return
+                        }
+                        
+                        portForwardResource.forwardedPorts.remove(at: idx!)
+                    } label: {
+                        Label("Delete", systemImage: "minus.circle")
+                            .labelStyle(.iconOnly)
+                    }.buttonStyle(.borderless)
                     TextField(value: mapping.localPort, formatter: NumberFormatter(), prompt: Text("Local")) {}
                     TextField(value: mapping.remotePort, formatter: NumberFormatter(), prompt: Text("Remote")) {}
                 }
