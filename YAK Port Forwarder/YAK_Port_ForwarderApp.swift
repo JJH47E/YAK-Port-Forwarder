@@ -14,6 +14,9 @@ struct YAK_Port_ForwarderApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(viewModel: viewModel)
+                .onOpenURL { url in
+                    viewModel.openFile(selectedURL: url)
+                }
         }.commands {
             CommandGroup(after: CommandGroupPlacement.newItem) {
                 Button("Save") {
