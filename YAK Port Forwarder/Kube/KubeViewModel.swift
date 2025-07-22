@@ -110,6 +110,7 @@ class KubeViewModel: ObservableObject {
         panel.title = "Save Configuration"
         panel.canCreateDirectories = true
         panel.showsTagField = false
+        panel.nameFieldStringValue = "kube-port-forward.yak"
         
         if panel.runModal() == .OK, let selectedURL = panel.url {
             let jsonEncoder = JSONEncoder()
