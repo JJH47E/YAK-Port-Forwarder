@@ -11,7 +11,7 @@ struct ShellHelper {
     private static let userPath: String? = {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/bin/zsh")
-        process.arguments = ["-ic", "echo $PATH"]
+        process.arguments = ["-ilc", "echo $PATH"]
         
         let pipe = Pipe()
         process.standardOutput = pipe
