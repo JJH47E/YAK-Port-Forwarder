@@ -95,8 +95,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
                     } else if process.terminationStatus == 15 { // SIGTERM is typically a status code of 15
                         self.status = .stopped
                     } else {
-                        print("Process Terminated with error: \(process.terminationStatus)")
-                        self.errorDescription = "Error: \(String(describing: process.standardError))"
+                        self.errorDescription = "Process Terminated with Error: \(KubectlExitReasonHelper.getExitReason(from: process.terminationStatus))"
                         self.status = .error
                     }
                     self.portForwardProcess = nil
@@ -115,9 +114,8 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
                 task.waitUntilExit()
             } catch {
                 DispatchQueue.main.async {
-                    print("Error running process: \(error.localizedDescription)")
                     self.status = .error
-                    self.errorDescription = "Error: \(error.localizedDescription)"
+                    self.errorDescription = "Error running process. Try again"
                     self.portForwardProcess = nil
                 }
             }
