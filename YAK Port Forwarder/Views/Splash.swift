@@ -50,7 +50,7 @@ struct Splash: View {
                 }
             }
         }.alert(isPresented: $viewModel.hasError) {
-            Alert(title: Text("Unhandled Exception"), message: Text(viewModel.errorText!), dismissButton: .default(Text("OK")) {
+            Alert(title: Text("Error"), message: Text(viewModel.errorText!), dismissButton: .default(Text("OK")) {
                 viewModel.resetError()
             })
         }
