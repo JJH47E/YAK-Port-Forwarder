@@ -84,8 +84,8 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
             
             // Spin up the process
             let task = ShellHelper.createProcess()
-            // TODO: Set up for other routes
-            task.executableURL = URL(fileURLWithPath: "/usr/local/bin/kubectl")
+
+            task.executableURL = ShellHelper.kubectlExecutable
             task.arguments = arguments
             
             task.terminationHandler = { process in

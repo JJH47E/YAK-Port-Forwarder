@@ -62,9 +62,15 @@ class KubeViewModel: ObservableObject {
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self = self else { return }
             
+            if ShellHelper.kubectlExecutable == nil {
+                self.errorText = "Cannot find Kubectl in system PATH. Please install Kubectl and try again."
+                self.hasError = true
+                return
+            }
+            
             let task = ShellHelper.createProcess()
-            // TODO: Set up for other routes
-            task.executableURL = URL(fileURLWithPath: "/usr/local/bin/kubectl")
+
+            task.executableURL = ShellHelper.kubectlExecutable
             task.arguments = ["config", "current-context"]
             
             let pipe = Pipe()
