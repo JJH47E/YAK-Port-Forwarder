@@ -61,7 +61,7 @@ class KubeViewModel: ObservableObject {
     
     func fetchAvailableContexts() {
         DispatchQueue.global(qos: .background).async { [weak self] in
-            guard let self = self, let kubectl = ShellHelper.kubectlExecutable else { return }
+            guard let self = self, let kubectl = ShellHelper.resolveKubectl() else { return }
 
             let task = ShellHelper.createProcess()
             task.executableURL = kubectl
@@ -95,15 +95,15 @@ class KubeViewModel: ObservableObject {
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self = self else { return }
 
-            if ShellHelper.kubectlExecutable == nil {
-                self.errorText = "Cannot find Kubectl in system PATH. Please install Kubectl and try again."
+            guard let kubectl = ShellHelper.resolveKubectl() else {
+                self.errorText = "Cannot find kubectl. Please install kubectl or set a custom path in Preferences."
                 self.hasError = true
                 return
             }
 
             let task = ShellHelper.createProcess()
 
-            task.executableURL = ShellHelper.kubectlExecutable
+            task.executableURL = kubectl
             task.arguments = ["config", "current-context"]
             
             let pipe = Pipe()

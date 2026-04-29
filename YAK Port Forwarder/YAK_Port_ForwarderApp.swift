@@ -24,18 +24,22 @@ struct YAK_Port_ForwarderApp: App {
                 }
                 .disabled(!viewModel.loaded)
                 .keyboardShortcut("S", modifiers: [.command])
-                
+
                 Button("Save As") {
                     viewModel.saveAs()
                 }
                 .disabled(!viewModel.loaded)
                 .keyboardShortcut("S", modifiers: [.command, .shift])
-                
+
                 Button("Open") {
                     viewModel.openFile()
                 }
                 .keyboardShortcut("O", modifiers: [.command])
             }
+        }
+
+        Settings {
+            PreferencesView()
         }
     }
 }
