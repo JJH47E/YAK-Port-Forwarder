@@ -12,18 +12,19 @@ import SwiftUI
 struct EditPortForward: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var portForwardResource: KubePortForwardResource
-    
+    var availableContexts: [String]
+
     @State private var editableResource: KubePortForwardResource?
-    
+
     var deleteAction: (() -> Void)
-    
+
     var body: some View {
         VStack {
             Group {
                 if editableResource == nil {
                     ProgressView()
                 } else {
-                    PortForwardForm(portForwardResource: editableResource!)
+                    PortForwardForm(portForwardResource: editableResource!, availableContexts: availableContexts)
                         .navigationTitle("Edit Port Forward")
                         .padding()
                 }
@@ -55,5 +56,5 @@ struct EditPortForward: View {
 
 #Preview {
     @Previewable @StateObject var resource = KubePortForwardResource(resourceName: "nginx-1234", resourceType: .pod, namespace: "default", forwardedPorts: [])
-    EditPortForward(portForwardResource: resource) {}
+    EditPortForward(portForwardResource: resource, availableContexts: ["dev-cluster", "staging-cluster"]) {}
 }

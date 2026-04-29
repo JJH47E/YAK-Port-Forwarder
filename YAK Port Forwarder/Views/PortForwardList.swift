@@ -9,17 +9,18 @@ import SwiftUI
 
 struct PortForwardList: View {
     @Binding var portForwards: [KubePortForwardResource]
-    
+    var availableContexts: [String]
+
     var body: some View {
         Grid {
             ForEach(batchForGrid(n: portForwards.count), id: \.self) { portForwardIdx in
                 GridRow {
-                    PortForwardItem(portForward: portForwards[portForwardIdx[0]]) {
+                    PortForwardItem(portForward: portForwards[portForwardIdx[0]], availableContexts: availableContexts) {
                         portForwards.remove(at: portForwardIdx[0])
                     }
-                    
+
                     if (portForwardIdx.count > 1) {
-                        PortForwardItem(portForward: portForwards[portForwardIdx[1]]) {
+                        PortForwardItem(portForward: portForwards[portForwardIdx[1]], availableContexts: availableContexts) {
                             portForwards.remove(at: portForwardIdx[1])
                         }
                     }
@@ -39,5 +40,5 @@ struct PortForwardList: View {
 
 #Preview {
     @Previewable @State var viewModel = PreviewKubeDataProvider()
-    PortForwardList(portForwards: $viewModel.portForwards)
+    PortForwardList(portForwards: $viewModel.portForwards, availableContexts: ["dev-cluster", "staging-cluster"])
 }

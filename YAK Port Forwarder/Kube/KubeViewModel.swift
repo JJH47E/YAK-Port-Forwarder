@@ -12,6 +12,7 @@ import SwiftUI
 class KubeViewModel: ObservableObject {
     var portForwards: [KubePortForwardResource] = []
     var context: String? = nil
+    var availableContexts: [String] = []
     var loaded: Bool = false
     var runningAll: Bool = false
     var errorText: String? = nil
@@ -58,16 +59,48 @@ class KubeViewModel: ObservableObject {
         self.loaded = true
     }
     
+    func fetchAvailableContexts() {
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self = self, let kubectl = ShellHelper.kubectlExecutable else { return }
+
+            let task = ShellHelper.createProcess()
+            task.executableURL = kubectl
+            task.arguments = ["config", "get-contexts", "-o", "name"]
+
+            let pipe = Pipe()
+            task.standardOutput = pipe
+            task.standardError = Pipe()
+
+            do {
+                try task.run()
+                task.waitUntilExit()
+
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                if let output = String(data: data, encoding: .utf8) {
+                    let contexts = output
+                        .components(separatedBy: .newlines)
+                        .map { $0.trimmingCharacters(in: .whitespaces) }
+                        .filter { !$0.isEmpty }
+                    DispatchQueue.main.async {
+                        self.availableContexts = contexts
+                    }
+                }
+            } catch {
+                // Leave availableContexts empty on failure
+            }
+        }
+    }
+
     func load() {
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self = self else { return }
-            
+
             if ShellHelper.kubectlExecutable == nil {
                 self.errorText = "Cannot find Kubectl in system PATH. Please install Kubectl and try again."
                 self.hasError = true
                 return
             }
-            
+
             let task = ShellHelper.createProcess()
 
             task.executableURL = ShellHelper.kubectlExecutable
@@ -93,8 +126,10 @@ class KubeViewModel: ObservableObject {
                 }
             }
         }
+
+        fetchAvailableContexts()
     }
-    
+
     func save() {
         if self.filePath == nil {
             // Save As

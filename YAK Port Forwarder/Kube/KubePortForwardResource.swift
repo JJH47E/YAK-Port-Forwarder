@@ -14,6 +14,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
     var resourceType: KubeResourceType
     var namespace: String
     var forwardedPorts: [PortMapping]
+    var context: String? = nil
     var status: PortForwardStatus
     var errorDescription: String? = nil
     
@@ -24,18 +25,21 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
     }
     
     enum CodingKeys: CodingKey {
-        case resourceName, resourceType, namespace, forwardedPorts
+        case resourceName, resourceType, namespace, forwardedPorts, context
     }
     
     func clone() -> KubePortForwardResource {
-        return KubePortForwardResource(resourceName: self.resourceName, resourceType: self.resourceType, namespace: self.namespace, forwardedPorts: self.forwardedPorts.map { $0.clone() })
+        let copy = KubePortForwardResource(resourceName: self.resourceName, resourceType: self.resourceType, namespace: self.namespace, forwardedPorts: self.forwardedPorts.map { $0.clone() })
+        copy.context = self.context
+        return copy
     }
-    
+
     func applyChanges(from resource: KubePortForwardResource) -> Void {
         self.resourceName = resource.resourceName
         self.resourceType = resource.resourceType
         self.namespace = resource.namespace
         self.forwardedPorts = resource.forwardedPorts
+        self.context = resource.context
         self.status = .idle
     }
     
@@ -79,7 +83,11 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
             let portsToForward = self.forwardedPorts.map { "\($0.localPort!):\($0.remotePort!)" }
             let resourceIdentifier = "\(self.resourceType.resourceName.isEmpty ? self.resourceType.resourceName : "\(self.resourceType.resourceName)/")\(self.resourceName)"
             
-            var arguments = ["port-forward", resourceIdentifier, "-n", self.namespace]
+            var arguments = ["port-forward"]
+            if let context = self.context {
+                arguments.append(contentsOf: ["--context", context])
+            }
+            arguments.append(contentsOf: [resourceIdentifier, "-n", self.namespace])
             arguments.append(contentsOf: portsToForward)
             
             // Spin up the process
@@ -143,8 +151,9 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
         try container.encode(self.resourceType, forKey: .resourceType)
         try container.encode(self.namespace, forKey: .namespace)
         try container.encode(self.forwardedPorts, forKey: .forwardedPorts)
+        try container.encodeIfPresent(self.context, forKey: .context)
     }
-    
+
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -152,6 +161,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
         self.resourceType = try container.decode(KubeResourceType.self, forKey: .resourceType)
         self.namespace = try container.decode(String.self, forKey: .namespace)
         self.forwardedPorts = try container.decode([PortMapping].self, forKey: .forwardedPorts)
+        self.context = try container.decodeIfPresent(String.self, forKey: .context)
         self.status = .idle
     }
 }

@@ -10,20 +10,28 @@ import SwiftUI
 
 struct PortForwardForm: View {
     @ObservedObject var portForwardResource: KubePortForwardResource
-    
+    var availableContexts: [String]
+
     @State private var type: KubeResourceType = .pod
-    
+
     var body: some View {
         Form {
             TextField("Resource Name", text: $portForwardResource.resourceName)
-            
+
             Picker("Resource Type", selection: $type) {
                 ForEach(KubeResourceType.all) { option in
                     Text(option.description).tag(option)
                 }
             }
-            
+
             TextField("Namespace", text: $portForwardResource.namespace)
+
+            Picker("Context", selection: $portForwardResource.context) {
+                Text("System Default").tag(String?.none)
+                ForEach(availableContexts, id: \.self) { ctx in
+                    Text(ctx).tag(String?.some(ctx))
+                }
+            }
             
             Section("Ports") {
                 ScrollView {
@@ -71,5 +79,5 @@ struct PortForwardForm: View {
 
 #Preview() {
     @Previewable @State var resource = KubePortForwardResource(resourceName: "nginx-1234", resourceType: .pod, namespace: "default", forwardedPorts: [])
-    PortForwardForm(portForwardResource: resource)
+    PortForwardForm(portForwardResource: resource, availableContexts: ["dev-cluster", "staging-cluster"])
 }
