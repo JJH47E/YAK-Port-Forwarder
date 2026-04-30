@@ -13,9 +13,10 @@ struct PortForwardItem: View {
     var availableContexts: [String]
 
     @State private var showEditSheet = false
+    @State private var showErrorDetail = false
 
     var deleteAction: (() -> Void)
-    
+
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -23,12 +24,28 @@ struct PortForwardItem: View {
                     Text(portForward.resourceName)
                         .bold()
                         .font(.title2)
-                    
+
                     if portForward.status == .error {
-                        Text(portForward.errorDescription ?? "Error")
+                        Text("Process error")
                             .font(.caption)
                             .foregroundStyle(.red)
                             .padding(.leading)
+                        Button {
+                            showErrorDetail.toggle()
+                        } label: {
+                            Label("Details", systemImage: "info.circle")
+                                .labelStyle(.iconOnly)
+                        }
+                        .buttonStyle(.borderless)
+                        .foregroundStyle(.red)
+                        .popover(isPresented: $showErrorDetail) {
+                            ScrollView {
+                                Text(portForward.errorDescription ?? "Unknown error")
+                                    .textSelection(.enabled)
+                                    .padding()
+                            }
+                            .frame(width: 320)
+                        }
                     }
                 }
                 Text("Namespace: \(portForward.namespace)")

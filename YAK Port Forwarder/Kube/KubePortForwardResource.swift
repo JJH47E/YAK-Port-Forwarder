@@ -95,21 +95,27 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
 
             task.executableURL = ShellHelper.resolveKubectl()
             task.arguments = arguments
-            
+
+            let stderrPipe = Pipe()
+            task.standardError = stderrPipe
+
             task.terminationHandler = { process in
+                let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+                let stderrText = String(data: stderrData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
+
                 DispatchQueue.main.async {
                     if process.terminationReason == .exit && process.terminationStatus == 0 {
                         self.status = .stopped
                     } else if process.terminationStatus == 15 { // SIGTERM is typically a status code of 15
                         self.status = .stopped
                     } else {
-                        self.errorDescription = "Process Terminated with Error: \(KubectlExitReasonHelper.getExitReason(from: process.terminationStatus))"
+                        self.errorDescription = "Process Terminated with Error: \(KubectlExitReasonHelper.getExitReason(from: process.terminationStatus, stderr: stderrText))"
                         self.status = .error
                     }
                     self.portForwardProcess = nil
                 }
             }
-            
+
             // Run the process
             do {
                 DispatchQueue.main.async {
@@ -123,7 +129,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
             } catch {
                 DispatchQueue.main.async {
                     self.status = .error
-                    self.errorDescription = "Error running process. Try again"
+                    self.errorDescription = "Failed to launch kubectl: \(error.localizedDescription)"
                     self.portForwardProcess = nil
                 }
             }
