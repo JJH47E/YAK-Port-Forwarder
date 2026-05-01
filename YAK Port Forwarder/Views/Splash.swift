@@ -16,43 +16,27 @@ struct Splash: View {
                 MainContent(viewModel: viewModel)
             } else {
                 VStack {
-                    let appIcon = NSImage(named: "AppIcon")
-                    
-                    VStack {
-                        if appIcon != nil {
-                            Image(nsImage: NSImage(named: "AppIcon")!)
-                                .resizable()
-                                .frame(width: 100, height: 100)
-                        } else {
-                            Image(systemName: "plus.square.dashed")
-                                .resizable()
-                                .frame(width: 100, height: 100)
-                        }
-                    
-                        Text("Yet Another Kubernetes Port Forwarder")
-                            .font(.headline)
-                        Text("You haven't created any port forwards")
-                            .font(.subheadline)
-                    }.padding()
-                    Button {
-                        viewModel.createNew()
-                    } label: {
-                        Label("Create Configuration File", systemImage: "plus")
-                            .labelStyle(.titleAndIcon)
-                            .padding(CGFloat(8))
-                    }.buttonStyle(.borderedProminent)
-                    Button {
-                        viewModel.openFile()
-                    } label: {
-                        Label("Open Configuration File", systemImage: "document")
-                            .labelStyle(.titleAndIcon)
-                    }.buttonStyle(.borderless)
-
-                    if !viewModel.recentFiles.isEmpty {
-                        Divider().padding(.vertical, 8)
+                    if viewModel.recentFiles.isEmpty {
+                        VStack {
+                            let appIcon = NSImage(named: "AppIcon")
+                            if appIcon != nil {
+                                Image(nsImage: NSImage(named: "AppIcon")!)
+                                    .resizable()
+                                    .frame(width: 100, height: 100)
+                            } else {
+                                Image(systemName: "plus.square.dashed")
+                                    .resizable()
+                                    .frame(width: 100, height: 100)
+                            }
+                            Text("Yet Another Kubernetes Port Forwarder")
+                                .font(.headline)
+                            Text("No configurations yet")
+                                .font(.subheadline)
+                        }.padding()
+                    } else {
                         Text("Recent Files")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(.headline)
+                            .padding(.bottom, 4)
                         VStack(alignment: .leading, spacing: 4) {
                             ForEach(viewModel.recentFiles, id: \.self) { url in
                                 Button {
@@ -67,8 +51,21 @@ struct Splash: View {
                                     }
                                 }.buttonStyle(.plain)
                             }
-                        }
+                        }.padding(.bottom, 8)
                     }
+                    Button {
+                        viewModel.createNew()
+                    } label: {
+                        Label("Create Configuration File", systemImage: "plus")
+                            .labelStyle(.titleAndIcon)
+                            .padding(CGFloat(8))
+                    }.buttonStyle(.borderedProminent)
+                    Button {
+                        viewModel.openFile()
+                    } label: {
+                        Label("Open Configuration File", systemImage: "document")
+                            .labelStyle(.titleAndIcon)
+                    }.buttonStyle(.borderless)
                 }
             }
         }.alert(isPresented: $viewModel.hasError) {
