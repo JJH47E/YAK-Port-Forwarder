@@ -10,40 +10,9 @@
 		346846A82E116161000A921B /* YAK Port Forwarder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "YAK Port Forwarder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		34032C6B2FA295C2003D2F89 /* Exceptions for "YAK Port Forwarder" folder in "YAK Port Forwarder" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				.claude/commands/opsx/apply.md,
-				.claude/commands/opsx/archive.md,
-				.claude/commands/opsx/continue.md,
-				.claude/commands/opsx/explore.md,
-				.claude/commands/opsx/new.md,
-				.claude/commands/opsx/onboard.md,
-				.claude/commands/opsx/propose.md,
-				.claude/commands/opsx/verify.md,
-				.claude/settings.local.json,
-				".claude/skills/openspec-apply-change/SKILL.md",
-				".claude/skills/openspec-archive-change/SKILL.md",
-				".claude/skills/openspec-continue-change/SKILL.md",
-				".claude/skills/openspec-explore/SKILL.md",
-				".claude/skills/openspec-new-change/SKILL.md",
-				".claude/skills/openspec-onboard/SKILL.md",
-				".claude/skills/openspec-propose/SKILL.md",
-				".claude/skills/openspec-verify-change/SKILL.md",
-				openspec/config.yaml,
-				"package-lock.json",
-			);
-			target = 346846A72E116161000A921B /* YAK Port Forwarder */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		346846AA2E116161000A921B /* YAK Port Forwarder */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				34032C6B2FA295C2003D2F89 /* Exceptions for "YAK Port Forwarder" folder in "YAK Port Forwarder" target */,
-			);
 			path = "YAK Port Forwarder";
 			sourceTree = "<group>";
 		};

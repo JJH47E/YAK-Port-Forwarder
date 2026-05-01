@@ -42,12 +42,15 @@ struct Splash: View {
                                 Button {
                                     viewModel.openFile(selectedURL: url)
                                 } label: {
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(url.lastPathComponent)
-                                            .font(.callout)
-                                        Text(url.deletingLastPathComponent().path)
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                    HStack(alignment: .center, spacing: 10) {
+                                        FileThumbnailView(url: url)
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(url.lastPathComponent)
+                                                .font(.callout)
+                                            Text(url.deletingLastPathComponent().path)
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
                                     }
                                 }.buttonStyle(.plain)
                             }
