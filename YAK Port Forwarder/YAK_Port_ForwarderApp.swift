@@ -9,11 +9,15 @@ import SwiftUI
 
 @main
 struct YAK_Port_ForwarderApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var viewModel = KubeViewModel()
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView(viewModel: viewModel)
+                .onAppear {
+                    appDelegate.viewModel = viewModel
+                }
                 .onOpenURL { url in
                     viewModel.openFile(selectedURL: url)
                 }

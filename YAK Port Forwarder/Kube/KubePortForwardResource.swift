@@ -144,10 +144,25 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
             self.portForwardProcess = nil
             return
         }
-        
+
         process.terminate()
-        
+
         self.status = .stopped
+    }
+
+    func stopAndWait(timeout: TimeInterval) {
+        guard let process = self.portForwardProcess, process.isRunning else { return }
+
+        process.terminate()
+
+        let deadline = Date().addingTimeInterval(timeout)
+        while process.isRunning && Date() < deadline {
+            Thread.sleep(forTimeInterval: 0.05)
+        }
+
+        if process.isRunning {
+            kill(process.processIdentifier, SIGKILL)
+        }
     }
     
     func encode(to encoder: Encoder) throws {
