@@ -18,7 +18,14 @@ class KubeViewModel: ObservableObject {
     var errorText: String? = nil
     var hasError: Bool = false
     var filePath: URL? = nil
-    
+
+    var recentFiles: [URL] {
+        NSDocumentController.shared.recentDocumentURLs
+            .filter { $0.pathExtension == "yak" && FileManager.default.fileExists(atPath: $0.path) }
+            .prefix(5)
+            .map { $0 }
+    }
+
     func resetError() -> Void {
         self.errorText = nil
         self.hasError = false
@@ -199,6 +206,7 @@ class KubeViewModel: ObservableObject {
             self.portForwards = config
             load()
             self.loaded = true
+            NSDocumentController.shared.noteNewRecentDocumentURL(selectedURL)
         } catch {
             print("[Open] Failed to open configuration file: \(error.localizedDescription)")
         }

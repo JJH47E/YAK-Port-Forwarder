@@ -47,6 +47,28 @@ struct Splash: View {
                         Label("Open Configuration File", systemImage: "document")
                             .labelStyle(.titleAndIcon)
                     }.buttonStyle(.borderless)
+
+                    if !viewModel.recentFiles.isEmpty {
+                        Divider().padding(.vertical, 8)
+                        Text("Recent Files")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 4) {
+                            ForEach(viewModel.recentFiles, id: \.self) { url in
+                                Button {
+                                    viewModel.openFile(selectedURL: url)
+                                } label: {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(url.lastPathComponent)
+                                            .font(.callout)
+                                        Text(url.deletingLastPathComponent().path)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }.buttonStyle(.plain)
+                            }
+                        }
+                    }
                 }
             }
         }.alert(isPresented: $viewModel.hasError) {
