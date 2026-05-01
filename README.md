@@ -11,6 +11,11 @@ YAK (Yet Another Kubernetes) Port Forwarder is a macOS GUI tool for managing & r
 
 ![Screenshot](https://github.com/JJH47E/YAK-Port-Forwarder/blob/main/Resources/yak-preview.png?raw=true)
 
+## Features
+
+- Save configuration files containing multiple port-forwards
+- Run multiple port forwards targetting different Kubernetes clusters in parallel
+- Forward to multiple ports on a single resource in parallel
 
 ## Installation
 
@@ -29,15 +34,6 @@ Clone the project
 Open the project in Xcode
 
 Press Run
-
-## Roadmap
-
-There're a few features I'd like to add, but not sure I'll get round to it. Feel free to contribute if you like the tool.
-
-1. Support custom `kubectl` executable paths
-2. Better error messages
-3. Resource/Namespace autocomplete (though I'm not a big fan of this feature)
-
 
 ## License
 
