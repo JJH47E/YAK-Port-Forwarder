@@ -51,6 +51,8 @@ struct PortForwardItem: View {
                 Text("Namespace: \(portForward.namespace)")
                 Text(portForward.resourceType.description)
                     .font(.subheadline)
+                Text("Context: \(portForward.context ?? "Default context")")
+                    .font(.subheadline)
             }.padding()
             Spacer()
             Group {
