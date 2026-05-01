@@ -11,12 +11,15 @@ struct AddPortForward: View {
     @Environment(\.dismiss) private var dismiss
     @State var portForwardResource = KubePortForwardResource.new()
     var viewModel: KubeViewModel
-    
+
     var body: some View {
         VStack {
-            PortForwardForm(portForwardResource: portForwardResource)
+            PortForwardForm(portForwardResource: portForwardResource, availableContexts: viewModel.availableContexts)
         }
         .padding()
+        .onAppear {
+            portForwardResource.context = viewModel.context
+        }
         .toolbar {
             ToolbarItem( placement: .confirmationAction ) {
                 Button("Create") {

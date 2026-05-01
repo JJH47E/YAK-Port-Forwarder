@@ -14,6 +14,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
     var resourceType: KubeResourceType
     var namespace: String
     var forwardedPorts: [PortMapping]
+    var context: String? = nil
     var status: PortForwardStatus
     var errorDescription: String? = nil
     
@@ -24,18 +25,21 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
     }
     
     enum CodingKeys: CodingKey {
-        case resourceName, resourceType, namespace, forwardedPorts
+        case resourceName, resourceType, namespace, forwardedPorts, context
     }
     
     func clone() -> KubePortForwardResource {
-        return KubePortForwardResource(resourceName: self.resourceName, resourceType: self.resourceType, namespace: self.namespace, forwardedPorts: self.forwardedPorts.map { $0.clone() })
+        let copy = KubePortForwardResource(resourceName: self.resourceName, resourceType: self.resourceType, namespace: self.namespace, forwardedPorts: self.forwardedPorts.map { $0.clone() })
+        copy.context = self.context
+        return copy
     }
-    
+
     func applyChanges(from resource: KubePortForwardResource) -> Void {
         self.resourceName = resource.resourceName
         self.resourceType = resource.resourceType
         self.namespace = resource.namespace
         self.forwardedPorts = resource.forwardedPorts
+        self.context = resource.context
         self.status = .idle
     }
     
@@ -79,29 +83,39 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
             let portsToForward = self.forwardedPorts.map { "\($0.localPort!):\($0.remotePort!)" }
             let resourceIdentifier = "\(self.resourceType.resourceName.isEmpty ? self.resourceType.resourceName : "\(self.resourceType.resourceName)/")\(self.resourceName)"
             
-            var arguments = ["port-forward", resourceIdentifier, "-n", self.namespace]
+            var arguments = ["port-forward"]
+            if let context = self.context {
+                arguments.append(contentsOf: ["--context", context])
+            }
+            arguments.append(contentsOf: [resourceIdentifier, "-n", self.namespace])
             arguments.append(contentsOf: portsToForward)
             
             // Spin up the process
             let task = ShellHelper.createProcess()
 
-            task.executableURL = ShellHelper.kubectlExecutable
+            task.executableURL = ShellHelper.resolveKubectl()
             task.arguments = arguments
-            
+
+            let stderrPipe = Pipe()
+            task.standardError = stderrPipe
+
             task.terminationHandler = { process in
+                let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
+                let stderrText = String(data: stderrData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
+
                 DispatchQueue.main.async {
                     if process.terminationReason == .exit && process.terminationStatus == 0 {
                         self.status = .stopped
                     } else if process.terminationStatus == 15 { // SIGTERM is typically a status code of 15
                         self.status = .stopped
                     } else {
-                        self.errorDescription = "Process Terminated with Error: \(KubectlExitReasonHelper.getExitReason(from: process.terminationStatus))"
+                        self.errorDescription = "Process Terminated with Error: \(KubectlExitReasonHelper.getExitReason(from: process.terminationStatus, stderr: stderrText))"
                         self.status = .error
                     }
                     self.portForwardProcess = nil
                 }
             }
-            
+
             // Run the process
             do {
                 DispatchQueue.main.async {
@@ -115,7 +129,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
             } catch {
                 DispatchQueue.main.async {
                     self.status = .error
-                    self.errorDescription = "Error running process. Try again"
+                    self.errorDescription = "Failed to launch kubectl: \(error.localizedDescription)"
                     self.portForwardProcess = nil
                 }
             }
@@ -130,10 +144,25 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
             self.portForwardProcess = nil
             return
         }
-        
+
         process.terminate()
-        
+
         self.status = .stopped
+    }
+
+    func stopAndWait(timeout: TimeInterval) {
+        guard let process = self.portForwardProcess, process.isRunning else { return }
+
+        process.terminate()
+
+        let deadline = Date().addingTimeInterval(timeout)
+        while process.isRunning && Date() < deadline {
+            Thread.sleep(forTimeInterval: 0.05)
+        }
+
+        if process.isRunning {
+            kill(process.processIdentifier, SIGKILL)
+        }
     }
     
     func encode(to encoder: Encoder) throws {
@@ -143,8 +172,9 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
         try container.encode(self.resourceType, forKey: .resourceType)
         try container.encode(self.namespace, forKey: .namespace)
         try container.encode(self.forwardedPorts, forKey: .forwardedPorts)
+        try container.encodeIfPresent(self.context, forKey: .context)
     }
-    
+
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -152,6 +182,7 @@ class KubePortForwardResource : ObservableObject, Codable, Cloneable {
         self.resourceType = try container.decode(KubeResourceType.self, forKey: .resourceType)
         self.namespace = try container.decode(String.self, forKey: .namespace)
         self.forwardedPorts = try container.decode([PortMapping].self, forKey: .forwardedPorts)
+        self.context = try container.decodeIfPresent(String.self, forKey: .context)
         self.status = .idle
     }
 }

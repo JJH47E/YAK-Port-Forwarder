@@ -7,8 +7,6 @@
 		<dict>
 			<key>CFBundleTypeIconFile</key>
 			<string>FileIcon</string>
-			<key>CFBundleTypeIconSystemGenerated</key>
-			<integer>1</integer>
 			<key>CFBundleTypeName</key>
 			<string>YAK File</string>
 			<key>CFBundleTypeRole</key>
@@ -22,12 +20,12 @@
 		</dict>
 		<dict/>
 	</array>
-	<key>UTImportedTypeDeclarations</key>
+	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.json</string>
+				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>YAK File</string>

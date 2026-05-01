@@ -9,11 +9,15 @@ import SwiftUI
 
 @main
 struct YAK_Port_ForwarderApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var viewModel = KubeViewModel()
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView(viewModel: viewModel)
+                .onAppear {
+                    appDelegate.viewModel = viewModel
+                }
                 .onOpenURL { url in
                     viewModel.openFile(selectedURL: url)
                 }
@@ -24,18 +28,22 @@ struct YAK_Port_ForwarderApp: App {
                 }
                 .disabled(!viewModel.loaded)
                 .keyboardShortcut("S", modifiers: [.command])
-                
+
                 Button("Save As") {
                     viewModel.saveAs()
                 }
                 .disabled(!viewModel.loaded)
                 .keyboardShortcut("S", modifiers: [.command, .shift])
-                
+
                 Button("Open") {
                     viewModel.openFile()
                 }
                 .keyboardShortcut("O", modifiers: [.command])
             }
+        }
+
+        Settings {
+            PreferencesView()
         }
     }
 }

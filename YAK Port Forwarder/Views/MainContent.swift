@@ -34,7 +34,7 @@ struct MainContent: View {
                 }
             } else {
                 ScrollView {
-                    PortForwardList(portForwards: $viewModel.portForwards)
+                    PortForwardList(portForwards: $viewModel.portForwards, availableContexts: viewModel.availableContexts)
                 }
             }
             

@@ -16,24 +16,46 @@ struct Splash: View {
                 MainContent(viewModel: viewModel)
             } else {
                 VStack {
-                    let appIcon = NSImage(named: "AppIcon")
-                    
-                    VStack {
-                        if appIcon != nil {
-                            Image(nsImage: NSImage(named: "AppIcon")!)
-                                .resizable()
-                                .frame(width: 100, height: 100)
-                        } else {
-                            Image(systemName: "plus.square.dashed")
-                                .resizable()
-                                .frame(width: 100, height: 100)
-                        }
-                    
-                        Text("Yet Another Kubernetes Port Forwarder")
+                    if viewModel.recentFiles.isEmpty {
+                        VStack {
+                            let appIcon = NSImage(named: "AppIcon")
+                            if appIcon != nil {
+                                Image(nsImage: NSImage(named: "AppIcon")!)
+                                    .resizable()
+                                    .frame(width: 100, height: 100)
+                            } else {
+                                Image(systemName: "plus.square.dashed")
+                                    .resizable()
+                                    .frame(width: 100, height: 100)
+                            }
+                            Text("Yet Another Kubernetes Port Forwarder")
+                                .font(.headline)
+                            Text("No configurations yet")
+                                .font(.subheadline)
+                        }.padding()
+                    } else {
+                        Text("Recent Files")
                             .font(.headline)
-                        Text("You haven't created any port forwards")
-                            .font(.subheadline)
-                    }.padding()
+                            .padding(.bottom, 4)
+                        VStack(alignment: .leading, spacing: 4) {
+                            ForEach(viewModel.recentFiles, id: \.self) { url in
+                                Button {
+                                    viewModel.openFile(selectedURL: url)
+                                } label: {
+                                    HStack(alignment: .center, spacing: 10) {
+                                        FileThumbnailView(url: url)
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(url.lastPathComponent)
+                                                .font(.callout)
+                                            Text(url.deletingLastPathComponent().path)
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                }.buttonStyle(.plain)
+                            }
+                        }.padding(.bottom, 8)
+                    }
                     Button {
                         viewModel.createNew()
                     } label: {

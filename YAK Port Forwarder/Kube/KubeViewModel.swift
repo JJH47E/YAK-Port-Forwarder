@@ -12,12 +12,20 @@ import SwiftUI
 class KubeViewModel: ObservableObject {
     var portForwards: [KubePortForwardResource] = []
     var context: String? = nil
+    var availableContexts: [String] = []
     var loaded: Bool = false
     var runningAll: Bool = false
     var errorText: String? = nil
     var hasError: Bool = false
     var filePath: URL? = nil
-    
+
+    var recentFiles: [URL] {
+        NSDocumentController.shared.recentDocumentURLs
+            .filter { $0.pathExtension == "yak" && FileManager.default.fileExists(atPath: $0.path) }
+            .prefix(5)
+            .map { $0 }
+    }
+
     func resetError() -> Void {
         self.errorText = nil
         self.hasError = false
@@ -58,19 +66,51 @@ class KubeViewModel: ObservableObject {
         self.loaded = true
     }
     
+    func fetchAvailableContexts() {
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self = self, let kubectl = ShellHelper.resolveKubectl() else { return }
+
+            let task = ShellHelper.createProcess()
+            task.executableURL = kubectl
+            task.arguments = ["config", "get-contexts", "-o", "name"]
+
+            let pipe = Pipe()
+            task.standardOutput = pipe
+            task.standardError = Pipe()
+
+            do {
+                try task.run()
+                task.waitUntilExit()
+
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                if let output = String(data: data, encoding: .utf8) {
+                    let contexts = output
+                        .components(separatedBy: .newlines)
+                        .map { $0.trimmingCharacters(in: .whitespaces) }
+                        .filter { !$0.isEmpty }
+                    DispatchQueue.main.async {
+                        self.availableContexts = contexts
+                    }
+                }
+            } catch {
+                // Leave availableContexts empty on failure
+            }
+        }
+    }
+
     func load() {
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self = self else { return }
-            
-            if ShellHelper.kubectlExecutable == nil {
-                self.errorText = "Cannot find Kubectl in system PATH. Please install Kubectl and try again."
+
+            guard let kubectl = ShellHelper.resolveKubectl() else {
+                self.errorText = "Cannot find kubectl. Please install kubectl or set a custom path in Preferences."
                 self.hasError = true
                 return
             }
-            
+
             let task = ShellHelper.createProcess()
 
-            task.executableURL = ShellHelper.kubectlExecutable
+            task.executableURL = kubectl
             task.arguments = ["config", "current-context"]
             
             let pipe = Pipe()
@@ -93,8 +133,10 @@ class KubeViewModel: ObservableObject {
                 }
             }
         }
+
+        fetchAvailableContexts()
     }
-    
+
     func save() {
         if self.filePath == nil {
             // Save As
@@ -164,6 +206,7 @@ class KubeViewModel: ObservableObject {
             self.portForwards = config
             load()
             self.loaded = true
+            NSDocumentController.shared.noteNewRecentDocumentURL(selectedURL)
         } catch {
             print("[Open] Failed to open configuration file: \(error.localizedDescription)")
         }
